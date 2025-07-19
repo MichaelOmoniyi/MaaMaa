@@ -1,35 +1,43 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative bg-dark-green py-16 md:py-24 bg-red-">
-      <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row items-center">
-          <div class="w-full md:w-1/2 mb-10 md:mb-0">
-            <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              The Soul of <span class="text-light-green">African</span> Kitchens
-            </h1>
-            <p class="text-gray-200 text-xl mb-8 max-w-lg">
-              MaaMaa revolutionizes food planning for African events with AI-powered precision, from guest count to inventory tracking.
-            </p>
-            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-              <NuxtLink to="/estimator" class="bg-primary-green hover:bg-light-green text-white text-lg font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
-                Get Started
-              </NuxtLink>
-              <NuxtLink to="/about" class="bg-transparent border-2 border-white hover:border-light-green text-white hover:text-light-green text-lg font-semibold py-3 px-6 rounded-lg transition duration-300">
-                Learn More
-              </NuxtLink>
+    <section class="relative hero-section min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style="background-image: url('/images/hero.png');">
+      <!-- Dark overlay for better text readability -->
+      <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="flex flex-col items-center text-center">
+          <!-- Main heading with badge -->
+          <div class="mb-8">
+            <div class="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/30">
+              <svg class="w-5 h-5 text-yellow-300 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              <span class="text-white text-sm font-medium">Your kitchen deserves this.</span>
             </div>
+            
+            <h1 class="text-white text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8">
+              Cook with heart.<br/>
+              <span class="text-light-green">Plan with precision.</span>
+            </h1>
           </div>
-          <div class="w-full md:w-1/2">
-            <img src="/images/maamaa-logo.png" alt="MaaMaa Logo" class="w-full max-w-md mx-auto" />
+          
+          <p class="text-gray-200 text-lg md:text-xl mb-10 max-w-3xl leading-relaxed">
+            MaaMaa is an AI-powered kitchen companion for African chefs, caterers, and food vendors. It helps you plan your meals, scale your ingredients, manage stock, and uncover insights — so you can focus on what really matters: feeding people well.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <NuxtLink to="/register" class="bg-white text-dark-green text-lg font-semibold py-4 px-10 rounded-lg shadow-lg hover:bg-gray-100 hover:shadow-xl transition-all duration-300 min-w-[220px] text-center">
+              Join Early Access
+            </NuxtLink>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Features Section -->
-    <section class="py-16 bg-white">
-      <div class="container mx-auto px-4">
+    <section class="py-16 bg-white" id="features">
+      <div class="container mx-auto px-4 pt-16">
         <div class="text-center mb-16">
           <h2 class="text-3xl md:text-4xl font-bold mb-4 text-dark-text">Our Solution: MaaMaa in Action</h2>
           <p class="text-gray-600 max-w-xl mx-auto">
@@ -293,3 +301,5 @@
     </section>
   </div>
 </template>
+
+

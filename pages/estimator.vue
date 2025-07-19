@@ -248,6 +248,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: ['auth']
+});
+
 const showResults = ref(false);
 
 // Sample form data
