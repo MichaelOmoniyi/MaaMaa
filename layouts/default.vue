@@ -1,7 +1,12 @@
 <template>
   <div class="min-h-screen flex flex-col bg-white">
     <!-- Navigation -->
-    <header class="bg-dark-green shadow-md">
+    <header 
+      :class="[
+        'transition-all duration-300 ease-in-out z-50',
+        route.path === '/' ? (isScrolled ? 'bg-dark-green shadow-md fixed top-0 left-0 right-0' : 'bg-transparent absolute top-0 left-0 right-0') : 'bg-dark-green shadow-md'
+      ]"
+    >
       <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center">
@@ -9,17 +14,61 @@
         </NuxtLink>
 
         <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center space-x-6">
-          <NuxtLink to="/" class="text-white hover:text-light-green transition duration-200">Home</NuxtLink>
-          <NuxtLink to="/estimator" class="text-white hover:text-light-green transition duration-200">Get Estimate</NuxtLink>
-          <NuxtLink to="/about" class="text-white hover:text-light-green transition duration-200">About</NuxtLink>
-          <NuxtLink to="/contact" class="text-white hover:text-light-green transition duration-200">Contact</NuxtLink>
-        </div>
+        <div class="flex space-x-8 items-center justify-end">
+          <div class="hidden md:flex items-center justify-end space-x-8">
+            <NuxtLink to="/about" class="text-white hover:text-light-green transition duration-200 font-medium">About us</NuxtLink>
+            <NuxtLink to="/usecases" class="text-white hover:text-light-green transition duration-200 font-medium">Use cases</NuxtLink>
+            <NuxtLink to="/pricing" class="text-white hover:text-light-green transition duration-200 font-medium">Pricing</NuxtLink>
+            <!-- Authenticated User Links -->
+            <template v-if="authStore.user">
+              <NuxtLink to="/chat" class="text-white hover:text-light-green transition duration-200 font-medium">Chat</NuxtLink>
+              <NuxtLink to="/estimator" class="text-white hover:text-light-green transition duration-200 font-medium">Estimator</NuxtLink>
+              <NuxtLink to="/inventory" class="text-white hover:text-light-green transition duration-200 font-medium">Inventory</NuxtLink>
+            </template>
+          </div>
 
-        <!-- Sign In / Register Buttons -->
-        <div class="hidden md:flex items-center space-x-3">
-          <NuxtLink to="/login" class="px-4 py-2 text-white hover:text-light-green transition duration-200">Sign In</NuxtLink>
-          <NuxtLink to="/register" class="px-4 py-2 bg-primary-green hover:bg-light-green text-white rounded-md transition duration-200">Register</NuxtLink>
+          <!-- Sign In / Register Buttons or User Dropdown -->
+          <div class="hidden md:flex items-center space-x-3">
+            <template v-if="authStore.user">
+              <div class="relative" ref="userMenuContainer">
+                <button 
+                  class="flex items-center text-white hover:text-light-green transition duration-200"
+                  @click="userMenuOpen = !userMenuOpen"
+                >
+                  <span class="mr-1">{{ authStore.user.user_metadata?.full_name || authStore.user.email }}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                
+                <!-- User Dropdown Menu -->
+                <div 
+                  v-if="userMenuOpen" 
+                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                  @click.stop
+                >
+                  <NuxtLink 
+                    to="/profile" 
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    @click="userMenuOpen = false"
+                  >
+                    Profile
+                  </NuxtLink>
+                  <button 
+                    class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    @click="logout"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <NuxtLink to="/login" class="bg-white text-dark-green hover:bg-gray-100 px-6 py-2 rounded-lg transition duration-200 font-medium">
+                Sign In
+              </NuxtLink>
+            </template>
+          </div>
         </div>
 
         <!-- Mobile menu button -->
@@ -32,22 +81,46 @@
       </nav>
 
       <!-- Mobile Navigation Menu -->
-      <div v-if="mobileMenuOpen" class="md:hidden bg-dark-green border-t border-light-green/10">
+      <div v-if="mobileMenuOpen" :class="[
+        'md:hidden border-t border-light-green/10',
+        route.path === '/' ? (isScrolled ? 'bg-dark-green' : 'bg-dark-green/90 backdrop-blur-sm') : 'bg-dark-green'
+      ]">
         <div class="container mx-auto px-4 py-3 space-y-1">
-          <NuxtLink to="/" class="block py-2 text-white hover:text-light-green">Home</NuxtLink>
-          <NuxtLink to="/estimator" class="block py-2 text-white hover:text-light-green">Get Estimate</NuxtLink>
-          <NuxtLink to="/about" class="block py-2 text-white hover:text-light-green">About</NuxtLink>
-          <NuxtLink to="/contact" class="block py-2 text-white hover:text-light-green">Contact</NuxtLink>
-          <div class="pt-2 flex space-x-3">
-            <NuxtLink to="/login" class="px-4 py-2 text-white hover:text-light-green">Sign In</NuxtLink>
-            <NuxtLink to="/register" class="px-4 py-2 bg-primary-green hover:bg-light-green text-white rounded-md">Register</NuxtLink>
+          <NuxtLink to="/about" class="block py-2 text-white hover:text-light-green">About us</NuxtLink>
+          <NuxtLink to="/usecases" class="block py-2 text-white hover:text-light-green">Use cases</NuxtLink>
+          <NuxtLink to="/pricing" class="block py-2 text-white hover:text-light-green">Pricing</NuxtLink>
+          <!-- Authenticated User Links -->
+          <template v-if="authStore.user">
+            <NuxtLink to="/chat" class="block py-2 text-white hover:text-light-green">Chat</NuxtLink>
+            <NuxtLink to="/estimator" class="block py-2 text-white hover:text-light-green">Estimator</NuxtLink>
+            <NuxtLink to="/inventory" class="block py-2 text-white hover:text-light-green">Inventory</NuxtLink>
+          </template>
+          <div class="pt-2">
+            <template v-if="authStore.user">
+              <div class="border-t border-gray-700 pt-2">
+                <NuxtLink to="/profile" class="block px-4 py-2 text-white hover:text-light-green">Profile</NuxtLink>
+                <button 
+                  class="w-full text-left px-4 py-2 text-white hover:text-light-green"
+                  @click="logout"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </template>
+            <template v-else>
+              <div class="pt-2">
+                <NuxtLink to="/login" class="block w-full bg-white text-dark-green hover:bg-gray-100 px-4 py-2 rounded-lg transition duration-200 font-medium text-center">
+                  Sign In
+                </NuxtLink>
+              </div>
+            </template>
           </div>
         </div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow">
+    <main :class="route.path === '/' ? '' : 'flex-grow'">
       <slot />
     </main>
 
@@ -66,6 +139,7 @@
             <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
             <ul class="space-y-2">
               <li><NuxtLink to="/" class="text-gray-300 hover:text-light-green">Home</NuxtLink></li>
+              <li><NuxtLink to="/usecases" class="text-gray-300 hover:text-light-green">Use Cases</NuxtLink></li>
               <li><NuxtLink to="/estimator" class="text-gray-300 hover:text-light-green">Get Estimate</NuxtLink></li>
               <li><NuxtLink to="/about" class="text-gray-300 hover:text-light-green">About Us</NuxtLink></li>
               <li><NuxtLink to="/contact" class="text-gray-300 hover:text-light-green">Contact</NuxtLink></li>
@@ -122,5 +196,77 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '~/store/auth';
+
 const mobileMenuOpen = ref(false);
+const userMenuOpen = ref(false);
+const userMenuContainer = ref(null);
+const isScrolled = ref(false);
+
+const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
+
+// Handle scroll for transparent navbar on home page
+const handleScroll = () => {
+  if (route.path === '/') {
+    isScrolled.value = window.scrollY > 50;
+  }
+};
+
+// Close user menu when clicking outside
+onMounted(() => {
+  document.addEventListener('click', (event) => {
+    if (userMenuContainer.value && !userMenuContainer.value.contains(event.target)) {
+      userMenuOpen.value = false;
+    }
+  });
+
+  // Add scroll listener for home page navbar
+  if (route.path === '/') {
+    window.addEventListener('scroll', handleScroll);
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+
+// Watch route changes to add/remove scroll listener
+watch(() => route.path, (newPath) => {
+  if (newPath === '/') {
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check current scroll position
+  } else {
+    window.removeEventListener('scroll', handleScroll);
+    isScrolled.value = false;
+  }
+});
+
+// Close user menu when clicking outside
+onMounted(() => {
+  document.addEventListener('click', (event) => {
+    if (userMenuContainer.value && !userMenuContainer.value.contains(event.target)) {
+      userMenuOpen.value = false;
+    }
+  });
+});
+
+// Handle user logout
+const logout = async () => {
+  try {
+    await authStore.logout();
+    userMenuOpen.value = false;
+    mobileMenuOpen.value = false;
+    router.push('/');
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
+};
+
+// Close menus on route change
+watch(() => router.currentRoute.value.path, () => {
+  userMenuOpen.value = false;
+  mobileMenuOpen.value = false;
+});
 </script>
